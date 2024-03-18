@@ -1,6 +1,6 @@
 import {createStore} from 'zustand/vanilla'
 import {Sound} from "@/app/market/[[...path]]/page";
-import {persist, createJSONStorage} from 'zustand/middleware'
+import {persist} from 'zustand/middleware'
 
 export type SoundsState = {
     sounds: Sound[]

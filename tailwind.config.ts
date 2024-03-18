@@ -1,6 +1,6 @@
 import type {Config} from "tailwindcss";
 import {nextui} from "@nextui-org/react";
-import { addDynamicIconSelectors } from "@iconify/tailwind";
+import {addDynamicIconSelectors} from "@iconify/tailwind";
 
 const config: Config = {
     content: [

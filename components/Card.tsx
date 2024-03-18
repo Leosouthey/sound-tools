@@ -20,10 +20,16 @@ export function DirectoryCard({directory}: { directory: Directory }) {
 
 export function SoundCard({sound}: { sound: Sound }) {
     const soundName = sound.sound.split("/").pop();
-    const { addSound } = useSoundsStore((state) => state)
+    const {addSound} = useSoundsStore((state) => state)
 
     const copyToClipboard = () => {
         navigator.clipboard.writeText(JSON.stringify(sound, null, 2));
+    }
+
+    const playSound = () => {
+        const audio = new Audio(sound.sound);
+        audio.volume = sound.volume || 1;
+        audio.play();
     }
 
     return (
@@ -36,10 +42,15 @@ export function SoundCard({sound}: { sound: Sound }) {
                 <div
                     className="w-96 flex items-center justify-between transition-all duration-300">
                     <Tooltip content="添加到编辑器" color="foreground">
-                        <Button isIconOnly onClick={() => addSound(sound)}><span className="icon-[line-md--plus]"/></Button>
+                        <Button isIconOnly onClick={() => addSound(sound)}><span
+                            className="icon-[line-md--plus] size-5"/></Button>
+                    </Tooltip>
+                    <Tooltip content="试听音效" color="foreground">
+                        <Button isIconOnly onClick={playSound}><span className="icon-[line-md--play] size-5"/></Button>
                     </Tooltip>
                     <Tooltip content="复制音效 JSON 信息" color="foreground">
-                        <Button isIconOnly onClick={copyToClipboard}><span className="icon-[line-md--clipboard-arrow-twotone]"/></Button>
+                        <Button isIconOnly onClick={copyToClipboard}><span
+                            className="icon-[line-md--clipboard-arrow-twotone] size-5"/></Button>
                     </Tooltip>
                 </div>
             </AccordionItem>
