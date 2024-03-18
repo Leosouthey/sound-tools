@@ -5,6 +5,7 @@ import Link from "next/link";
 import {Directory, Sound} from "@/app/market/[[...path]]/page";
 import {Accordion, AccordionItem, BreadcrumbItem, Breadcrumbs, Button, Tooltip} from "@nextui-org/react";
 import {useSoundsStore} from "@/providers/sounds-store-provider";
+import {getSoundName, playSound} from "@/utils/sound";
 
 export function DirectoryCard({directory}: { directory: Directory }) {
     const pathname = usePathname()
@@ -19,17 +20,19 @@ export function DirectoryCard({directory}: { directory: Directory }) {
 }
 
 export function SoundCard({sound}: { sound: Sound }) {
-    const soundName = sound.sound.split("/").pop();
+    const soundName = getSoundName(sound);
     const {addSound} = useSoundsStore((state) => state)
 
     const copyToClipboard = () => {
-        navigator.clipboard.writeText(JSON.stringify(sound, null, 2));
+        const temp = {...sound};
+        temp.sound = getSoundName(temp);
+        const json = JSON.stringify(temp, null, 2);
+        navigator.clipboard.writeText(json);
     }
 
-    const playSound = () => {
-        const audio = new Audio(sound.sound);
-        audio.volume = sound.volume || 1;
-        audio.play();
+    const play = (rate: number) => () => {
+        const soundWithRate = {...sound, pitch: {min: rate, max: rate}};
+        playSound(soundWithRate);
     }
 
     return (
@@ -45,8 +48,14 @@ export function SoundCard({sound}: { sound: Sound }) {
                         <Button isIconOnly onClick={() => addSound(sound)}><span
                             className="icon-[line-md--plus] size-5"/></Button>
                     </Tooltip>
-                    <Tooltip content="试听音效" color="foreground">
-                        <Button isIconOnly onClick={playSound}><span className="icon-[line-md--play] size-5"/></Button>
+                    <Tooltip content="试听音调0" color="foreground">
+                        <Button isIconOnly onClick={play(0)}><span className="icon-[line-md--play] size-5"/></Button>
+                    </Tooltip>
+                    <Tooltip content="试听音调1" color="foreground">
+                        <Button isIconOnly onClick={play(1)}><span className="icon-[line-md--play] size-5"/></Button>
+                    </Tooltip>
+                    <Tooltip content="试听音调2" color="foreground">
+                        <Button isIconOnly onClick={play(2)}><span className="icon-[line-md--play] size-5"/></Button>
                     </Tooltip>
                     <Tooltip content="复制音效 JSON 信息" color="foreground">
                         <Button isIconOnly onClick={copyToClipboard}><span

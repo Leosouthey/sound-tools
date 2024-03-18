@@ -19,22 +19,7 @@ import React, {useRef, useState} from "react";
 import {chain} from "@react-aria/utils";
 import {Sound} from "@/app/market/[[...path]]/page";
 import {Input} from "@nextui-org/input";
-
-async function playSound(sound: Sound): Promise<Howl> {
-    const rate = Math.random() * ((sound.pitch?.max || 0) - (sound.pitch?.min || 0)) + (sound.pitch?.min || 0);
-    const howl = new Howl({
-        src: [sound.sound],
-        volume: sound.volume || 1,
-        rate: rate,
-        html5: true,
-    });
-    if (sound.delay) {
-        setTimeout(() => howl.play(), sound.delay / 20 * 1000);
-    } else {
-        howl.play();
-    }
-    return howl;
-}
+import {getSoundName, getSoundPath, playSound} from "@/utils/sound";
 
 export default function Editor() {
     const {sounds, setSounds} = useSoundsStore((state) => state)
@@ -52,7 +37,12 @@ export default function Editor() {
     }
 
     const exportProject = () => {
-        const data = JSON.stringify(sounds, null, 2);
+        const json = sounds.map((sound) => {
+            const temp = {...sound};
+            temp.sound = getSoundName(temp);
+            return temp;
+        })
+        const data = JSON.stringify(json, null, 2);
         const blob = new Blob([data], {type: "application/json"});
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
@@ -72,7 +62,13 @@ export default function Editor() {
             const reader = new FileReader();
             reader.onload = (e) => {
                 const content = e.target?.result as string;
-                setSounds(JSON.parse(content));
+                const json = JSON.parse(content)
+                const importSounds = json.map((sound: Sound) => {
+                    const temp = {...sound};
+                    temp.sound = getSoundPath(temp);
+                    return temp;
+                });
+                setSounds(importSounds);
             }
             reader.readAsText(file);
         }
@@ -114,7 +110,9 @@ export default function Editor() {
                 {sounds.map((sound, index) => <SoundEditCard key={index} sound={sound}/>)}
             </div>
             <div className="flex gap-2">
-                <Button isIconOnly onClick={play}><span className="icon-[line-md--play] size-5"/></Button>
+                <Tooltip content="播放整体效果" color="foreground">
+                    <Button isIconOnly onClick={play}><span className="icon-[line-md--play] size-5"/></Button>
+                </Tooltip>
             </div>
         </div>
     );
@@ -122,12 +120,15 @@ export default function Editor() {
 
 function SoundEditCard({sound}: { sound: Sound }) {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
-    const soundName = sound.sound.split("/").pop();
+    const soundName = getSoundName(sound);
     const {sounds, removeSound, setSounds} = useSoundsStore((state) => state)
     const [form, setForm] = useState<Sound>(sound);
 
     const copyToClipboard = () => {
-        navigator.clipboard.writeText(JSON.stringify(sound, null, 2));
+        const temp = {...sound};
+        temp.sound = getSoundName(temp);
+        const json = JSON.stringify(temp, null, 2);
+        navigator.clipboard.writeText(json);
     }
 
     const play = () => {
