@@ -109,11 +109,14 @@ export default function Editor() {
             <div className="flex flex-col gap-2">
                 {sounds.map((sound, index) => <SoundEditCard key={index} sound={sound}/>)}
             </div>
-            <div className="flex gap-2">
-                <Tooltip content="播放整体效果" color="foreground">
-                    <Button isIconOnly onClick={play}><span className="icon-[line-md--play] size-5"/></Button>
-                </Tooltip>
-            </div>
+            {
+                sounds.length !== 0 &&
+                <div className="flex gap-2">
+                    <Tooltip content="播放整体效果" color="foreground">
+                        <Button isIconOnly onClick={play}><span className="icon-[line-md--play] size-5"/></Button>
+                    </Tooltip>
+                </div>
+            }
         </div>
     );
 }
