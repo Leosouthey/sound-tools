@@ -14,10 +14,6 @@ export type Sound = {
     delay?: number;
 };
 
-export type Directory = {
-    name: string;
-};
-
 export type ListJSON = {
     directories: string[];
     files: string[];
@@ -36,7 +32,7 @@ export default function Market({params}: { params: { page: string } }) {
     );
 }
 
-export function getAudioFiles(dir: string, sounds: Sound[] = []): Sound[] {
+function getAudioFiles(dir: string, sounds: Sound[] = []): Sound[] {
     const file = fs.readFileSync(path.join(dir, "_list.json"), "utf-8");
     const list = JSON.parse(file) as ListJSON;
     const directories = list.directories;
