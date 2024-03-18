@@ -1,43 +1,50 @@
-import {createStore} from 'zustand/vanilla'
-import {Sound} from "@/app/market/[[...path]]/page";
-import {persist} from 'zustand/middleware'
+import { createStore } from "zustand/vanilla";
+import { Sound } from "@/app/market/[page]/page";
+import { persist } from "zustand/middleware";
 
 export type SoundsState = {
-    sounds: Sound[]
-}
+  sounds: Sound[];
+};
 
 export type SoundsActions = {
-    setSounds: (sounds: Sound[]) => void
-    addSound: (sound: Sound) => void
-    removeSound: (sound: Sound) => void
-    updateSound: (sound: Sound) => void
-    clearSounds: () => void
-}
+  setSounds: (sounds: Sound[]) => void;
+  addSound: (sound: Sound) => void;
+  removeSound: (sound: Sound) => void;
+  updateSound: (sound: Sound) => void;
+  clearSounds: () => void;
+};
 
 export const initSoundsStore = (): SoundsState => {
-    return {sounds: []}
-}
+  return { sounds: [] };
+};
 
-export type SoundsStore = SoundsState & SoundsActions
+export type SoundsStore = SoundsState & SoundsActions;
 
 export const defaultInitState: SoundsState = {
-    sounds: []
-}
+  sounds: [],
+};
 
 export const createSoundsStore = (
-    initState: SoundsState = defaultInitState,
+  initState: SoundsState = defaultInitState
 ) => {
-    return createStore<SoundsStore>()(persist(
-        (set) => ({
-            ...initState,
-            setSounds: (sounds) => set({sounds}),
-            addSound: (sound) => set((state) => ({sounds: [...state.sounds, sound]})),
-            removeSound: (sound) => set((state) => ({sounds: state.sounds.filter((s) => s !== sound)})),
-            updateSound: (sound) => set((state) => ({sounds: state.sounds.map((s) => s === sound ? sound : s)})),
-            clearSounds: () => set({sounds: []})
-        }),
-        {
-            name: 'sounds-store',
-        }
-    ))
-}
+  return createStore<SoundsStore>()(
+    persist(
+      (set) => ({
+        ...initState,
+        setSounds: (sounds) => set({ sounds }),
+        addSound: (sound) =>
+          set((state) => ({ sounds: [...state.sounds, sound] })),
+        removeSound: (sound) =>
+          set((state) => ({ sounds: state.sounds.filter((s) => s !== sound) })),
+        updateSound: (sound) =>
+          set((state) => ({
+            sounds: state.sounds.map((s) => (s === sound ? sound : s)),
+          })),
+        clearSounds: () => set({ sounds: [] }),
+      }),
+      {
+        name: "sounds-store",
+      }
+    )
+  );
+};
