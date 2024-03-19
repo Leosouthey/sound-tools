@@ -23,14 +23,14 @@ export default function Editor() {
     const {sounds, setSounds} = useSoundsStore((state) => state);
     const fileInput = useRef<HTMLInputElement>(null);
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
-    const [howls, setHowls] = React.useState<Howl[]>([]);
+    const [sourceNodes, setSourceNodes] = React.useState<AudioBufferSourceNode[]>([]);
 
     const play = async () => {
-        howls.forEach((howl) => howl.stop());
-        setHowls([]);
+        sourceNodes.forEach((sourceNode) => sourceNode.stop());
+        setSourceNodes([]);
         for (const sound of sounds) {
-            const howl = await playSound(sound);
-            setHowls((prev) => [...prev, howl]);
+            const sourceNode = await playSound(sound);
+            setSourceNodes((prev) => [...prev, sourceNode]);
         }
     };
 
