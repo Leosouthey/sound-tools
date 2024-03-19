@@ -1,5 +1,4 @@
 import {Sound} from "@/app/market/[page]/page";
-import {Howl} from "howler";
 import path from "path";
 
 const map = new Map<number, number>([
@@ -51,22 +50,21 @@ export function getSoundPath(sound: Sound): string {
     return sep + "sounds" + sep + sound.sound.replaceAll(".", sep) + ".ogg";
 }
 
-export async function playSound(sound: Sound): Promise<Howl> {
+export async function playSound(sound: Sound): Promise<AudioBufferSourceNode> {
+    const audioContext = new AudioContext();
+    const response = await fetch(sound.sound);
+    const audioBuffer = await response.arrayBuffer();
+    const decodedAudio = await audioContext.decodeAudioData(audioBuffer);
+    const sourceNode = audioContext.createBufferSource();
+    sourceNode.buffer = decodedAudio;
     const minPitch = sound.pitch.min;
     const maxPitch = sound.pitch.max;
     const minRate = pitchToRate(minPitch);
     const maxRate = pitchToRate(maxPitch);
     const rate = Math.random() * (maxRate - minRate) + minRate;
-    const howl = new Howl({
-        src: [sound.sound],
-        volume: sound.volume,
-        rate: Math.pow(2, rate / 12),
-        html5: true,
-    });
-    if (sound.delay) {
-        setTimeout(() => howl.play(), (sound.delay / 20) * 1000);
-    } else {
-        howl.play();
-    }
-    return howl;
+    sourceNode.playbackRate.value = Math.pow(2, rate / 12);
+    sourceNode.connect(audioContext.destination);
+    setTimeout(() => sourceNode?.start(), (sound.delay / 20) * 1000);
+
+    return sourceNode;
 }
