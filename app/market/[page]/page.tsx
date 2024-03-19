@@ -6,12 +6,12 @@ import path from "path";
 
 export type Sound = {
     sound: string;
-    volume?: number;
-    pitch?: {
-        min?: number;
-        max?: number;
+    volume: number;
+    pitch: {
+        min: number;
+        max: number;
     };
-    delay?: number;
+    delay: number;
 };
 
 export type ListJSON = {
@@ -42,6 +42,12 @@ function getAudioFiles(dir: string, sounds: Sound[] = []): Sound[] {
             sound: path
                 .relative(process.cwd(), path.join(dir, sound))
                 .replace("public", ""),
+            volume: 1,
+            pitch: {
+                min: 1,
+                max: 1,
+            },
+            delay: 0,
         }))
     );
     directories.forEach((directory) => {

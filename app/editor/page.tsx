@@ -9,7 +9,7 @@ import {
     ModalBody,
     ModalContent,
     ModalFooter,
-    ModalHeader,
+    ModalHeader, Slider,
     Tooltip,
     useDisclosure,
 } from "@nextui-org/react";
@@ -17,7 +17,7 @@ import React, {useRef, useState} from "react";
 import {chain} from "@react-aria/utils";
 import {Sound} from "@/app/market/[page]/page";
 import {Input} from "@nextui-org/input";
-import {getSoundName, getSoundPath, playSound} from "@/utils/sound";
+import {getSoundName, getSoundPath, pitchToRate, playSound, rateToPitch} from "@/utils/sound";
 
 export default function Editor() {
     const {sounds, setSounds} = useSoundsStore((state) => state);
@@ -149,6 +149,14 @@ function SoundEditCard({sound}: { sound: Sound }) {
         setSounds(sounds.map((s) => (s === sound ? form : s)));
     };
 
+    const changeRange = (value: number | number[]) => {
+        if (typeof value === "number") {
+            setForm({...form, pitch: {min: rateToPitch(value), max: rateToPitch(value)}});
+        } else {
+            setForm({...form, pitch: {min: rateToPitch(value[0]), max: rateToPitch(value[1])}});
+        }
+    };
+
     return (
         <div className="flex gap-4">
             <div>
@@ -186,53 +194,30 @@ function SoundEditCard({sound}: { sound: Sound }) {
                                     <Input
                                         label="音量"
                                         type="text"
-                                        {...(form.volume && {
-                                            defaultValue: form.volume.toString(),
-                                        })}
+                                        defaultValue={form.volume.toString()}
                                         onChange={(e) =>
                                             setForm({...form, volume: Number(e.target.value)})
                                         }
                                     />
-                                    <div className="flex gap-2">
-                                        <Input
-                                            label="音速最小值"
-                                            type="text"
-                                            {...(form.pitch?.min && {
-                                                defaultValue: form.pitch.min.toString(),
-                                            })}
-                                            onChange={(e) =>
-                                                setForm({
-                                                    ...form,
-                                                    pitch: {
-                                                        ...form.pitch,
-                                                        min: Number(e.target.value),
-                                                    },
-                                                })
+                                    <Slider
+                                        label="音调"
+                                        step={1}
+                                        maxValue={12}
+                                        minValue={-12}
+                                        getValue={(value) => {
+                                            if (typeof value === "number") {
+                                                return `${value}`
+                                            } else {
+                                                return `${value[0]} ~ ${value[1]}`
                                             }
-                                        />
-                                        <Input
-                                            label="音速最大值"
-                                            type="text"
-                                            {...(form.pitch?.max && {
-                                                defaultValue: form.pitch.max.toString(),
-                                            })}
-                                            onChange={(e) =>
-                                                setForm({
-                                                    ...form,
-                                                    pitch: {
-                                                        ...form.pitch,
-                                                        max: Number(e.target.value),
-                                                    },
-                                                })
-                                            }
-                                        />
-                                    </div>
+                                        }}
+                                        defaultValue={[pitchToRate(form.pitch.min), pitchToRate(form.pitch.max)]}
+                                        onChange={changeRange}
+                                    />
                                     <Input
                                         label="延迟"
                                         type="text"
-                                        {...(form.delay && {
-                                            defaultValue: form.delay.toString(),
-                                        })}
+                                        defaultValue={form.delay.toString()}
                                         onChange={(e) =>
                                             setForm({...form, delay: Number(e.target.value)})
                                         }

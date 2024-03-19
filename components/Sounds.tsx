@@ -9,7 +9,7 @@ import {useSearchStore} from "@/providers/search-store-provider";
 
 export function Sounds({page, allSounds}: { page: number, allSounds: Sound[] }) {
     const {search, setSearch} = useSearchStore((state) => state);
-    const count = 30;
+    const count = 20;
     const filteredSounds = useMemo(
         () =>
             allSounds.filter((sound) =>
