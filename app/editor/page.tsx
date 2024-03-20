@@ -34,6 +34,24 @@ export default function Editor() {
         }
     };
 
+    const copyProject = () => {
+        const json = sounds.map((sound) => {
+            const temp = {...sound};
+            temp.sound = getSoundName(temp);
+            return temp;
+        });
+        const data = JSON.stringify(json, null, 2);
+        // 复制到剪贴板
+        const input = document.createElement('textarea');
+        input.innerHTML = data;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        alert('复制成功');
+    };
+
+
     const exportProject = () => {
         const json = sounds.map((sound) => {
             const temp = {...sound};
@@ -90,6 +108,7 @@ export default function Editor() {
                 )}
                 {sounds.length !== 0 && (
                     <>
+                        <Button onClick={copyProject}>复制工程文件</Button>
                         <Button onClick={exportProject}>导出工程文件</Button>
                         <Button color="danger" onClick={onOpen}>
                             清空工程

@@ -21,7 +21,7 @@ export function SoundCard({sound}: { sound: Sound }) {
         <div className="flex gap-4">
             <div>
                 <Tooltip content="添加到编辑器" color="foreground">
-                    <Button isIconOnly onClick={() => addSound(sound)}>
+                    <Button isIconOnly onClick={() => {addSound(sound);alert("已添加到编辑器");} }>
                         <span className="icon-[line-md--plus] size-5"/>
                     </Button>
                 </Tooltip>
