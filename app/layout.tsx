@@ -4,6 +4,7 @@ import { Providers } from "./providers";
 import { Navigation } from "@/components/Navigation";
 import { SoundsStoreProvider } from "@/providers/sounds-store-provider";
 import React from "react";
+import {Toaster} from "sonner";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -20,6 +21,7 @@ export default function RootLayout({
       <body>
         <Providers>
           <SoundsStoreProvider>
+            <Toaster position="top-right" />
             <header className="w-full h-20 flex items-center text-fg z-40">
               <div className="xl:max-w-7xl px-5 sm:px-10 lg:px-5 w-full mx-auto">
                 <Navigation />

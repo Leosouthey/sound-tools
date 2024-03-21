@@ -1,22 +1,16 @@
-import Link from "next/link";
+"use client";
+
+import {Tab, Tabs} from "@nextui-org/react";
+import {usePathname} from "next/navigation";
 
 export function Navigation() {
-  return (
-    <nav className="flex justify-center items-center gap-10 relative h-16 lg:h-auto">
-      <div className="group w-fit flex gap-2 border rounded-full px-4 py-2 bg-zinc-800 *:text-lg *:transition-all *:duration-300 *:font-semibold *:text-gray-300 hover:bg-zinc-900 transition-all duration-300">
-        <Link
-          href="/market/1"
-          className="hover:!text-gray-300 group-hover:text-gray-500"
-        >
-          广场
-        </Link>
-        <Link
-          href="/editor"
-          className="hover:!text-gray-300 group-hover:text-gray-500"
-        >
-          编辑器
-        </Link>
-      </div>
-    </nav>
-  );
+    const pathname = usePathname().split("/")[1];
+    return (
+        <nav className="flex justify-center items-center gap-10 relative h-16 lg:h-auto">
+            <Tabs aria-label="Options" selectedKey={pathname}>
+                <Tab key="market" title="广场" href="/market/1"/>
+                <Tab key="editor" title="编辑器" href="/editor"/>
+            </Tabs>
+        </nav>
+    );
 }

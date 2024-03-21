@@ -7,6 +7,7 @@ import {
 } from "@nextui-org/react";
 import {useSoundsStore} from "@/providers/sounds-store-provider";
 import {getSoundName, playSound} from "@/utils/sound";
+import {toast} from "sonner";
 
 export function SoundCard({sound}: { sound: Sound }) {
     const soundName = getSoundName(sound);
@@ -21,7 +22,10 @@ export function SoundCard({sound}: { sound: Sound }) {
         <div className="flex gap-4">
             <div>
                 <Tooltip content="添加到编辑器" color="foreground">
-                    <Button isIconOnly onClick={() => {addSound(sound);alert("已添加到编辑器");} }>
+                    <Button isIconOnly onClick={() => {
+                        addSound(sound)
+                        toast(soundName + " 已添加到编辑器")
+                    }}>
                         <span className="icon-[line-md--plus] size-5"/>
                     </Button>
                 </Tooltip>

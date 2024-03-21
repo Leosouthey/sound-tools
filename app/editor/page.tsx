@@ -1,7 +1,5 @@
 "use client";
 
-import {Howl} from "howler";
-
 import {useSoundsStore} from "@/providers/sounds-store-provider";
 import {
     Button,
@@ -18,6 +16,7 @@ import {chain} from "@react-aria/utils";
 import {Sound} from "@/app/market/[page]/page";
 import {Input} from "@nextui-org/input";
 import {getSoundName, getSoundPath, pitchToRate, playSound, rateToPitch} from "@/utils/sound";
+import {toast} from "sonner";
 
 export default function Editor() {
     const {sounds, setSounds} = useSoundsStore((state) => state);
@@ -41,16 +40,8 @@ export default function Editor() {
             return temp;
         });
         const data = JSON.stringify(json, null, 2);
-        // 复制到剪贴板
-        const input = document.createElement('textarea');
-        input.innerHTML = data;
-        document.body.appendChild(input);
-        input.select();
-        document.execCommand('copy');
-        document.body.removeChild(input);
-        alert('复制成功');
+        navigator.clipboard.writeText(data);
     };
-
 
     const exportProject = () => {
         const json = sounds.map((sound) => {
@@ -180,7 +171,10 @@ function SoundEditCard({sound}: { sound: Sound }) {
         <div className="flex gap-4">
             <div>
                 <Tooltip content="从编辑器中移除" color="foreground">
-                    <Button isIconOnly onClick={() => removeSound(sound)}>
+                    <Button isIconOnly onClick={() => {
+                        removeSound(sound)
+                        toast(soundName + " 已从编辑器中移除")
+                    }}>
                         <span className="icon-[line-md--minus] size-5"/>
                     </Button>
                 </Tooltip>
